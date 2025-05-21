@@ -1,0 +1,98 @@
+version: "3.8"
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    ports:
+      - "2181:2181"
+    networks:
+      - microservices
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
+    networks:
+      - microservices
+
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "5000:5000"
+    depends_on:
+      - application-service
+      - ai-service
+      - chat-service
+      - setting-service
+    networks:
+      - microservices
+
+  application-service:
+    build: ./application-service
+    ports:
+      - "3001:3001"
+    depends_on:
+      - redis
+      - kafka
+    networks:
+      - microservices
+
+  chat-service:
+    build: ./chat-service
+    ports:
+      - "3006:3006"
+    depends_on:
+      - redis
+      - kafka
+    networks:
+      - microservices
+
+  ai-service:
+    build: ./ai-service
+    ports:
+      - "3005:3005"
+    depends_on:
+      - redis
+    networks:
+      - microservices
+
+  dashboard-service:
+    build: ./dashboard-service
+    ports:
+      - "4000:4000"
+    depends_on:
+      - redis
+    networks:
+      - microservices
+
+  setting-service:
+    build: ./setting-service
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+    networks:
+      - microservices
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - microservices
+
+networks:
+  microservices:
+    driver: bridge
