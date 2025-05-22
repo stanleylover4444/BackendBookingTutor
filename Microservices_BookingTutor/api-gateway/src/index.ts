@@ -58,7 +58,7 @@ app.use(
   createProxyMiddleware(proxyOptions(services.application, "api"))
 );
 app.use(
-  "/serviceAI",
+  "serviceAI",
   createProxyMiddleware(proxyOptions(services.ai, "serviceAI"))
 );
 app.use(
