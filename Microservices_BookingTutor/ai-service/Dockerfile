@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Copy package.json và cài đặt dependencies
 COPY package.json yarn.lock ./
-RUN yarn install --production
+RUN yarn install
 
 # Copy toàn bộ code
 COPY . .
