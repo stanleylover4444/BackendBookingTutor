@@ -11,7 +11,7 @@ const swaggerOptions = {
       description: "API Gateway for Booking Tutor Microservices",
     },
     servers: [
-      { url: "http://localhost:5000" }, // API Gateway URL
+      { url: "https://sl1-server.io.vn/" }, // API Gateway URL
     ],
   },
   apis: ["./src/routes/*.ts"], // Chỉ lấy API từ API Gateway
